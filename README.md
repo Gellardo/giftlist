@@ -1,6 +1,8 @@
 # giftlist
 Webservice to manage whishlists and who buys what.
 
+[![Build Status](https://travis-ci.org/Gellardo/giftlist.svg?branch=master)](https://travis-ci.org/Gellardo/giftlist)
+
 This project is intended to teach myself the basics of Webapp development in Go
 and perhaps sprinkle in some microservices/docker/... .
 
