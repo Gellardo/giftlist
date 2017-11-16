@@ -20,6 +20,20 @@ type item struct {
 	Name string
 }
 
+type listApi struct {
+	Router *mux.Router
+}
+
+func listAPIinit() *listApi {
+	r := mux.NewRouter()
+	r.StrictSlash(true)
+	r.HandleFunc("/", CreateList).Methods(http.MethodPost)
+	r.HandleFunc("/{id}/", ViewList).Methods(http.MethodGet)
+	r.HandleFunc("/{id}/", CreateItem).Methods(http.MethodPost)
+
+	return &listApi{r}
+}
+
 func CreateItem(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 	l := lists[vars["id"]]
@@ -70,12 +84,8 @@ func ViewList(w http.ResponseWriter, r *http.Request) {
 }
 
 func main() {
-	r := mux.NewRouter()
-	r.StrictSlash(true)
-	r.HandleFunc("/", CreateList).Methods(http.MethodPost)
-	r.HandleFunc("/{id}/", ViewList).Methods(http.MethodGet)
-	r.HandleFunc("/{id}/", CreateItem).Methods(http.MethodPost)
+	api := listAPIinit()
 	lists["abc"] = &list{"abc", "some name", []item{}}
 
-	log.Fatal(http.ListenAndServe(":8000", r))
+	log.Fatal(http.ListenAndServe(":8000", api.Router))
 }
