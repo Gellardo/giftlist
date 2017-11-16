@@ -27,7 +27,7 @@ func CreateItem(w http.ResponseWriter, r *http.Request) {
 	var i item
 	if err := json.NewDecoder(r.Body).Decode(&i); err != nil {
 		log.Print("POST ", r.RequestURI, " jsonerr: ", err)
-		w.WriteHeader(http.StatusExpectationFailed)
+		w.WriteHeader(http.StatusInternalServerError)
 		return
 	}
 	l.Items = append(l.Items, i)
@@ -40,7 +40,12 @@ func CreateList(w http.ResponseWriter, r *http.Request) {
 	var l list
 	if err := json.NewDecoder(r.Body).Decode(&l); err != nil {
 		log.Print("POST / jsonerr: ", err)
-		w.WriteHeader(http.StatusExpectationFailed)
+		w.WriteHeader(http.StatusInternalServerError)
+		return
+	}
+	if lists[l.Id] != nil {
+		log.Print("POST / alreadyexsisting: ", l.Id)
+		w.WriteHeader(http.StatusInternalServerError)
 		return
 	}
 	lists[l.Id] = &l
