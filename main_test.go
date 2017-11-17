@@ -27,7 +27,7 @@ func TestListAPI(t *testing.T) {
 		{"view list+item", "GET", "/testid/", "", http.StatusOK, "{\"id\":\"testid\",\"name\":\"test\",\"items\":[{\"name\":\"testitem\"}]}"},
 	}
 
-	api := listAPIinit()
+	api = *listAPIinit() //TODO feels really dirty to use the state
 	api.Store.StoreList(&list{Id: "testid", Name: "test"})
 	for _, tc := range testcases {
 		t.Run(tc.name, func(t *testing.T) {
