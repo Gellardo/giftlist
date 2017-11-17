@@ -18,15 +18,17 @@ func TestListAPI(t *testing.T) {
 		expCode int
 		expBody string
 	}{
-		{"create list", "POST", "/", "{\"id\":\"testid\", \"name\":\"test\"}", http.StatusCreated, "{\"id\":\"testid\"}"},
-		{"error in json", "POST", "/", "{\"id\":\"testid}", http.StatusInternalServerError, ""},
 		{"view list", "GET", "/testid/", "", http.StatusOK, "{\"id\":\"testid\",\"name\":\"test\"}"},
+		{"create list", "POST", "/", "{\"id\":\"someid\", \"name\":\"test123\"}", http.StatusCreated, "{\"id\":\"someid\"}"},
+		{"view list", "GET", "/someid/", "", http.StatusOK, "{\"id\":\"someid\",\"name\":\"test123\"}"},
+		{"error in json", "POST", "/", "{\"id\":\"testid}", http.StatusInternalServerError, ""},
 		{"nonexistent list", "GET", "/testid123/", "", http.StatusNotFound, ""},
 		{"add item", "POST", "/testid/", "{\"name\":\"testitem\"}", http.StatusCreated, ""},
 		{"view list+item", "GET", "/testid/", "", http.StatusOK, "{\"id\":\"testid\",\"name\":\"test\",\"items\":[{\"name\":\"testitem\"}]}"},
 	}
 
 	api := listAPIinit()
+	api.Store.StoreList(&list{Id: "testid", Name: "test"})
 	for _, tc := range testcases {
 		t.Run(tc.name, func(t *testing.T) {
 			req, err := http.NewRequest(tc.method, tc.url, strings.NewReader(tc.body))

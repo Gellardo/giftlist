@@ -22,6 +22,7 @@ type item struct {
 
 type listApi struct {
 	Router *mux.Router
+	Store  Storage
 }
 
 func listAPIinit() *listApi {
@@ -31,7 +32,7 @@ func listAPIinit() *listApi {
 	r.HandleFunc("/{id}/", ViewList).Methods(http.MethodGet)
 	r.HandleFunc("/{id}/", CreateItem).Methods(http.MethodPost)
 
-	return &listApi{r}
+	return &listApi{r, &easyStore{make(map[string]*list)}}
 }
 
 func CreateItem(w http.ResponseWriter, r *http.Request) {
