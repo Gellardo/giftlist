@@ -17,7 +17,7 @@ type list struct {
 }
 
 type item struct {
-	Name string
+	Name string `json:"name"`
 }
 
 type listApi struct {
