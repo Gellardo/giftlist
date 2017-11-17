@@ -46,7 +46,7 @@ func CreateItem(w http.ResponseWriter, r *http.Request) {
 	var i item
 	if err := json.NewDecoder(r.Body).Decode(&i); err != nil {
 		log.Print("POST ", r.RequestURI, " jsonerr: ", err)
-		w.WriteHeader(http.StatusInternalServerError)
+		http.Error(w, "{\"error\":\"jsondecode\"}", http.StatusInternalServerError)
 		return
 	}
 	l.Items = append(l.Items, i)
@@ -61,7 +61,7 @@ func CreateList(w http.ResponseWriter, r *http.Request) {
 	var l list
 	if err := json.NewDecoder(r.Body).Decode(&l); err != nil {
 		log.Print("POST / jsonerr: ", err)
-		w.WriteHeader(http.StatusInternalServerError)
+		http.Error(w, "{\"error\":\"jsondecode\"}", http.StatusInternalServerError)
 		return
 	}
 	if _, err := api.Store.GetList(l.Id); err == nil {
