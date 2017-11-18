@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"log"
 	"net/http"
+	"time"
 
 	"github.com/gorilla/mux"
 )
@@ -25,9 +26,7 @@ type listApi struct {
 	Store  Storage
 }
 
-func listAPIinit() *listApi {
-	r := mux.NewRouter()
-	r.StrictSlash(true)
+func listAPIinit(r *mux.Router) *listApi {
 	r.HandleFunc("/", CreateList).Methods(http.MethodPost)
 	r.HandleFunc("/{id}/", ViewList).Methods(http.MethodGet)
 	r.HandleFunc("/{id}/", CreateItem).Methods(http.MethodPost)
@@ -92,8 +91,17 @@ func ViewList(w http.ResponseWriter, r *http.Request) {
 }
 
 func main() {
-	api = *listAPIinit() //TODO feels really dirty to use the state
+	r := mux.NewRouter()
+	r.StrictSlash(true)
+	api = *listAPIinit(r) //TODO feels really dirty to use global state
 	api.Store.StoreList(&list{"abc", "some name", []item{}})
 
-	log.Fatal(http.ListenAndServe(":8000", api.Router))
+	server := &http.Server{
+		Addr:         ":8000",
+		Handler:      r,
+		ReadTimeout:  5 * time.Second,
+		WriteTimeout: 10 * time.Second,
+		IdleTimeout:  120 * time.Second,
+	}
+	log.Fatal(server.ListenAndServe())
 }
