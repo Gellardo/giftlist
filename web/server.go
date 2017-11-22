@@ -1,6 +1,7 @@
 package web
 
 import (
+	"encoding/json"
 	"html/template"
 	"log"
 	"net/http"
@@ -8,9 +9,47 @@ import (
 	"github.com/gorilla/mux"
 )
 
+//TODO duplicate; import if list-API is refactored into an unique package
+type list struct {
+	Id    string `json:"id,omitempty"`
+	Name  string `json:"name,omitempty"`
+	Items []item `json:"items,omitempty"`
+}
+
+//TODO duplicate; import if list-API is refactored into an unique package
+type item struct {
+	Name string `json:"name"`
+}
+
 func renderPage(w http.ResponseWriter, name string, data interface{}) {
 	t := template.Must(template.ParseFiles("web/templates/basics.template", "web/templates/index.html", "web/templates/show.html"))
-	t.ExecuteTemplate(w, name, data)
+	err := t.ExecuteTemplate(w, name, data)
+	if err != nil {
+		log.Printf("page %s: err=%s", name, err)
+	}
+}
+
+func ListHandler(w http.ResponseWriter, r *http.Request) {
+	vars := mux.Vars(r)
+	log.Println(r.Method + " " + r.URL.Path + ": show " + vars["id"])
+	resp, err := http.Get("http://localhost:8000/list/" + vars["id"])
+	if err != nil {
+		log.Printf("Failed REST call: err=%s", err)
+		return
+	}
+
+	var l list
+	err = json.NewDecoder(resp.Body).Decode(&l)
+	if err != nil {
+		log.Printf("Failed json decode: err=%s", err)
+		return
+	}
+	log.Println(l)
+
+	renderPage(w, "show.html", struct {
+		Name string
+		List list
+	}{Name: vars["id"], List: l})
 }
 
 func Run(r *mux.Router, prefix string) {
@@ -23,8 +62,5 @@ func Run(r *mux.Router, prefix string) {
 		log.Print(r.Method + " " + r.URL.Path)
 		renderPage(w, "index.html", nil)
 	})
-	s.HandleFunc("/show/", func(w http.ResponseWriter, r *http.Request) {
-		log.Print(r.Method + " " + r.URL.Path)
-		renderPage(w, "show.html", nil)
-	})
+	s.HandleFunc("/show/{id}", ListHandler)
 }
