@@ -36,6 +36,10 @@ func ListHandler(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		log.Printf("Failed REST call: err=%s", err)
 		return
+	} else if resp.StatusCode != http.StatusOK {
+		log.Printf("REST call status=%d", resp.StatusCode)
+		http.Error(w, "Not found", http.StatusNotFound)
+		return
 	}
 
 	var l list
