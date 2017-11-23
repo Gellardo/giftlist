@@ -47,9 +47,9 @@ func ListHandler(w http.ResponseWriter, r *http.Request) {
 	log.Println(l)
 
 	renderPage(w, "show.html", struct {
-		Name string
+		Id   string
 		List list
-	}{Name: vars["id"], List: l})
+	}{Id: vars["id"], List: l})
 }
 
 func Run(r *mux.Router, prefix string) {

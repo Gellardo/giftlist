@@ -1,8 +1,23 @@
 {{ template "header" }}
 
-<h1> {{ .Name }} </h1>
+<h1>{{ .List.Name }}</h1>
 
-<p>{{ .Name }} list</p>
-<p>{{ .List }}</p>
+<p>Accessible through the id: {{.Id}}</p>
+
+<p> Items
+<table border="1px solid black">
+	<tr><th>Name</th></tr>
+	<tr>
+		<td>New Item</td>
+		<td><button>+</button></td>
+	</tr>
+
+{{ range $i, $val := .List.Items }}
+	<tr>
+		<td>{{$val.Name}}</td>
+	</tr>
+{{end}}
+</table>
+</p>
 
 {{ template "footer" }}
