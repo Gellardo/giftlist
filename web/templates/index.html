@@ -5,7 +5,7 @@
 <p>Come and create a list of the things you wish for.</p>
 
 <form id="createListForm" onsubmit="createList(); return false">
-	<input type="text" name="listname">
+	<input type="text" name="listname" placeholder="New list name">
 	<button type="submit">Create</button>
 </form>
 	<script>
@@ -20,7 +20,7 @@
 			var response = JSON.parse(xmlhttp.responseText);
 
 			if (response["error"] != undefined && response["error"] != "") {
-				alert('an error occured' + response["error"])
+				alert('an error occured: ' + response["error"])
 				return
 			}
 

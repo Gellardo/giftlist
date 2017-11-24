@@ -8,8 +8,11 @@
 <table border="1px solid black">
 	<tr><th>Name</th></tr>
 	<tr>
-		<td>New Item</td>
-		<td><button>+</button></td>
+		<form id="createItemForm" onsubmit="createItem(); return false">
+			<input type="hidden" name="listid" value="{{.Id}}">
+			<td><input type="text" name="itemname" placeholder="New Item"></td>
+			<td><button type="submit">+</button></td>
+		</form>
 	</tr>
 
 {{ range $i, $val := .List.Items }}
@@ -19,5 +22,20 @@
 {{end}}
 </table>
 </p>
+
+	<script>
+		function createItem(){
+			var form = document.getElementById("createItemForm");
+			var name = form.itemname.value;
+			var listid = form.listid.value;
+			form.reset()
+			var xmlhttp = new XMLHttpRequest();
+			xmlhttp.open("POST", "/list/"+listid+"/", false);
+			xmlhttp.setRequestHeader("Content-Type", "application/json");
+			xmlhttp.send('{"name":"'+name+'"}');
+
+			location.reload();
+		}
+	</script>
 
 {{ template "footer" }}
