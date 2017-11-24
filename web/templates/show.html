@@ -5,13 +5,14 @@
 <p>Accessible through the id: {{.Id}}</p>
 
 <p> Items
-<table border="1px solid black">
+<div style="overflow-x-auto;">
+<table>
 	<tr><th>Name</th></tr>
 	<tr>
 		<form id="createItemForm" onsubmit="createItem(); return false">
 			<input type="hidden" name="listid" value="{{.Id}}">
-			<td><input type="text" name="itemname" placeholder="New Item"></td>
-			<td><button type="submit">+</button></td>
+			<td><input type="text" name="itemname" placeholder="New Item" required></td>
+			<td><button class="add" type="submit">+</button></td>
 		</form>
 	</tr>
 
@@ -21,6 +22,7 @@
 	</tr>
 {{end}}
 </table>
+</div>
 </p>
 
 	<script>
