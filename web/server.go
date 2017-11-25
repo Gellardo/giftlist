@@ -69,3 +69,11 @@ func Run(r *mux.Router, prefix string) {
 	})
 	s.HandleFunc("/show/{id}", ListHandler)
 }
+
+func Web(p *mux.Router, prefix, staticdir string) {
+	s := p.PathPrefix(prefix).Subrouter()
+	s.PathPrefix("/static/").Handler(
+		http.StripPrefix(prefix+"static", http.FileServer(http.Dir(staticdir))),
+	)
+	//TODO integrate templatedir and a getbyid method/API-URL/... for lists
+}
