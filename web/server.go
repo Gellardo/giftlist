@@ -21,12 +21,13 @@ type item struct {
 	Name string `json:"name"`
 }
 
-func renderPage(w http.ResponseWriter, name string, data interface{}) {
+func renderPage(w http.ResponseWriter, name string, data interface{}) error {
 	t := template.Must(template.ParseFiles("web/templates/basics.template", "web/templates/index.html", "web/templates/show.html"))
 	err := t.ExecuteTemplate(w, name, data)
 	if err != nil {
 		log.Printf("page %s: err=%s", name, err)
 	}
+	return err
 }
 
 func ListHandler(w http.ResponseWriter, r *http.Request) {
