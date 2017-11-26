@@ -1,0 +1,15 @@
+{{ define "header" }}
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<title>Giftlist</title>
+	<link rel="stylesheet" type="text/css" href="/web/static/main.css">
+</head>
+<body style="margin: 20px;">
+{{end}}
+
+{{ define "footer" }}
+</body>
+</html>
+{{end}}

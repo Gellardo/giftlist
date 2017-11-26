@@ -1,0 +1,42 @@
+{{ template "header" }}
+
+<h1>{{ .List.Name }}</h1>
+
+<p>The list is accessible under the name: {{.Id}}</p>
+
+<p> Items </p>
+<div style="overflow-x-auto;">
+<table>
+	<tr><th>Name</th></tr>
+	<tr>
+		<form id="createItemForm" onsubmit="createItem(); return false">
+			<input type="hidden" name="listid" value="{{.Id}}">
+			<td><input type="text" name="itemname" placeholder="New Item" required></td>
+			<td><button class="add" type="submit">+</button></td>
+		</form>
+	</tr>
+
+{{ range $i, $val := .List.Items }}
+	<tr>
+		<td>{{$val.Name}}</td>
+	</tr>
+{{end}}
+</table>
+</div>
+
+	<script>
+		function createItem(){
+			var form = document.getElementById("createItemForm");
+			var name = form.itemname.value;
+			var listid = form.listid.value;
+			form.reset()
+			var xmlhttp = new XMLHttpRequest();
+			xmlhttp.open("POST", "/list/"+listid+"/", false);
+			xmlhttp.setRequestHeader("Content-Type", "application/json");
+			xmlhttp.send('{"name":"'+name+'"}');
+
+			location.reload();
+		}
+	</script>
+
+{{ template "footer" }}

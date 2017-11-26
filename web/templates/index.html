@@ -1,0 +1,32 @@
+{{ template "header" }}
+
+<h1> Welcome to Giftlist </h1>
+
+<p>Come and create a list of the things you wish for.</p>
+
+<form id="createListForm" onsubmit="createList(); return false">
+	<input type="text" name="listname" placeholder="New list name" required>
+	<button type="submit" class="add">Create</button>
+</form>
+	<script>
+		function createList(){
+			var form = document.getElementById("createListForm");
+			var name = form.listname.value;
+			var xmlhttp = new XMLHttpRequest();
+			xmlhttp.open("POST", "/list/", false);
+			xmlhttp.setRequestHeader("Content-Type", "application/json");
+			//xmlhttp.onreadystatechange = callbackfunction(xmlhttp);
+			xmlhttp.send('{"id":"'+name+'","name":"'+name+'"}');
+			var response = JSON.parse(xmlhttp.responseText);
+
+			if (response["error"] != undefined && response["error"] != "") {
+				alert('an error occured: ' + response["error"])
+				return
+			}
+
+			// redirect to newly created list
+			location.href='/web/show/'+response["id"];
+		}
+	</script>
+
+{{ template "footer" }}
