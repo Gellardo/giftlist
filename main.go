@@ -97,7 +97,7 @@ func main() {
 	r.StrictSlash(true)
 	api = *listAPIinit(r, "/list/") //TODO feels really dirty to use global state
 	api.Store.StoreList(&list{"abc", "some name", []item{}})
-	web.Run(r, "/web/")
+	web.Run(r, "/web/", "./web/", "http://localhost:8000/list/")
 	r.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
 		http.Redirect(w, r, "/web/", http.StatusMovedPermanently)
 	})
