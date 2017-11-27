@@ -11,14 +11,17 @@ import (
 
 //TODO duplicate; import if list-API is refactored into an unique package
 type list struct {
-	Id    string `json:"id,omitempty"`
+	Id    string `json:"id"`
 	Name  string `json:"name,omitempty"`
 	Items []item `json:"items,omitempty"`
 }
 
 //TODO duplicate; import if list-API is refactored into an unique package
 type item struct {
-	Name string `json:"name"`
+	Id       string `json:"id"`
+	Name     string `json:"name,omitempty"`
+	Link     string `json:"link,omitempty"`
+	Assigned bool   `json:"assigned,omitempty"`
 }
 
 func renderPage(w http.ResponseWriter, basedir, name string, data interface{}) error {

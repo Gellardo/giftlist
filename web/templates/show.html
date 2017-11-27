@@ -7,11 +7,17 @@
 <p> Items </p>
 <div style="overflow-x-auto;">
 <table>
-	<tr><th>Name</th></tr>
+	<tr>
+		<th>Name</th>
+		<th>Link</th>
+		<th>Assigned</th>
+	</tr>
 	<tr>
 		<form id="createItemForm" onsubmit="createItem(); return false">
 			<input type="hidden" name="listid" value="{{.Id}}">
 			<td><input type="text" name="itemname" placeholder="New Item" required></td>
+			<td><input type="text" name="link" placeholder="Link"></td>
+			<td><input type="checkbox" name="assigned"></td>
 			<td><button class="add" type="submit">+</button></td>
 		</form>
 	</tr>
@@ -19,21 +25,34 @@
 {{ range $i, $val := .List.Items }}
 	<tr>
 		<td>{{$val.Name}}</td>
+		<td><a href={{$val.Link}}>{{$val.Link}}</a></td>
+		{{ if $val.Assigned }}
+			<td>yup</td>
+		{{else}}
+			<td>nope</td>
+		{{end}}
 	</tr>
 {{end}}
 </table>
 </div>
 
 	<script>
+		String.prototype.escapeQuoteJSON = function() {
+			return this.replace(/"/g, '\\"');
+		}
+
 		function createItem(){
 			var form = document.getElementById("createItemForm");
 			var name = form.itemname.value;
 			var listid = form.listid.value;
+			var link = form.link.value;
+			var assigned = form.assigned.checked;
 			form.reset()
 			var xmlhttp = new XMLHttpRequest();
 			xmlhttp.open("POST", "/list/"+listid+"/", false);
 			xmlhttp.setRequestHeader("Content-Type", "application/json");
-			xmlhttp.send('{"name":"'+name+'"}');
+			json = '{"name":"'+name.escapeQuoteJSON()+'","link":"'+link.escapeQuoteJSON()+'","assigned":'+assigned+'}'
+			xmlhttp.send(json);
 
 			location.reload();
 		}
