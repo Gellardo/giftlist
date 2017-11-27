@@ -26,7 +26,7 @@ func TestListAPI(t *testing.T) {
 		{"error in json", "POST", "/", "{\"id\":\"testid}", http.StatusInternalServerError, ""},
 		{"nonexistent list", "GET", "/testid123/", "", http.StatusNotFound, ""},
 		{"add item", "POST", "/testid/", "{\"name\":\"testitem\"}", http.StatusCreated, ""},
-		{"view list+item", "GET", "/testid/", "", http.StatusOK, "{\"id\":\"testid\",\"name\":\"test\",\"items\":[{\"name\":\"testitem\"}]}"},
+		{"view list+item", "GET", "/testid/", "", http.StatusOK, "{\"id\":\"testid\",\"name\":\"test\",\"items\":[{\"id\":\"0\",\"name\":\"testitem\"}]}"},
 	}
 
 	api = *listAPIinit(mux.NewRouter(), "") //TODO feels really dirty to use global state

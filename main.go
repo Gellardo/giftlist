@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"log"
 	"net/http"
+	"strconv"
 	"time"
 
 	"github.com/gorilla/mux"
@@ -14,13 +15,16 @@ import (
 var api listApi
 
 type list struct {
-	Id    string `json:"id,omitempty"`
+	Id    string `json:"id"`
 	Name  string `json:"name,omitempty"`
 	Items []item `json:"items,omitempty"`
 }
 
 type item struct {
-	Name string `json:"name"`
+	Id       string `json:"id"`
+	Name     string `json:"name,omitempty"`
+	Link     string `json:"link,omitempty"`
+	Assigned bool   `json:"assigned,omitempty"`
 }
 
 type listApi struct {
@@ -51,6 +55,7 @@ func CreateItem(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, "{\"error\":\"jsondecode\"}", http.StatusInternalServerError)
 		return
 	}
+	i.Id = strconv.Itoa(len(l.Items)) + i.Id
 	l.Items = append(l.Items, i)
 	api.Store.StoreList(l)
 	log.Print("POST ", r.URL.Path, " itemadded: ", i)
