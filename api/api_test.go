@@ -1,4 +1,4 @@
-package main
+package api
 
 import (
 	"encoding/json"
@@ -29,8 +29,11 @@ func TestListAPI(t *testing.T) {
 		{"view list+item", "GET", "/testid/", "", http.StatusOK, "{\"id\":\"testid\",\"name\":\"test\",\"items\":[{\"id\":\"0\",\"name\":\"testitem\"}]}"},
 	}
 
-	api = *listAPIinit(mux.NewRouter(), "") //TODO feels really dirty to use global state
-	api.Store.StoreList(&list{Id: "testid", Name: "test"})
+	r := mux.NewRouter()
+	Setup(r, "/")
+
+	store.StoreList(&List{Id: "testid", Name: "test"})
+
 	for _, tc := range testcases {
 		t.Run(tc.name, func(t *testing.T) {
 			req, err := http.NewRequest(tc.method, tc.url, strings.NewReader(tc.body))
@@ -39,9 +42,9 @@ func TestListAPI(t *testing.T) {
 			}
 
 			w := httptest.NewRecorder()
-			api.Router.ServeHTTP(w, req)
+			r.ServeHTTP(w, req)
 
-			var l list
+			var l List
 			if tc.expCode == w.Code && (tc.expBody == "" || tc.expBody+"\n" == w.Body.String()) {
 				if err := json.NewDecoder(w.Body).Decode(&l); tc.expBody != "" && err != nil {
 					t.Errorf("failed to decode answer: jerr='%s' body='%s'", err, w.Body)
