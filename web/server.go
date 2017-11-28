@@ -43,13 +43,13 @@ func getListHandler(basedir, listapiurl string) http.HandlerFunc {
 		log.Println(l)
 
 		renderPage(w, basedir, "show.html", struct {
-			Id   string
+			ID   string
 			List api.List
-		}{Id: vars["id"], List: l})
+		}{ID: vars["id"], List: l})
 	}
 }
 
-// Adds a webserver for the giftlist to the router p.
+// Run a webserver for the giftlist using the router p.
 // All paths must include the trailing '/'.
 //
 // The webserver is added to *p* under the path *prefix*.

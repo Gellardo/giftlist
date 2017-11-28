@@ -2,7 +2,7 @@
 
 <h1>{{ .List.Name }}</h1>
 
-<p>The list is accessible under the name: {{.Id}}</p>
+<p>The list is accessible under the name: {{.ID}}</p>
 
 <p> Items </p>
 <div style="overflow-x-auto;">
@@ -14,7 +14,7 @@
 	</tr>
 	<tr>
 		<form id="createItemForm" onsubmit="createItem(); return false">
-			<input type="hidden" name="listid" value="{{.Id}}">
+			<input type="hidden" name="listid" value="{{.ID}}">
 			<td><input type="text" name="itemname" placeholder="New Item" required></td>
 			<td><input type="text" name="link" placeholder="Link"></td>
 			<td><input type="checkbox" name="assigned"></td>

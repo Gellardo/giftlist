@@ -9,7 +9,7 @@ import (
 	"github.com/gorilla/mux"
 )
 
-func CreateItem(w http.ResponseWriter, r *http.Request) {
+func createItem(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 	l, err := store.GetList(vars["id"])
 	if err != nil {
@@ -23,7 +23,7 @@ func CreateItem(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, "{\"error\":\"jsondecode\"}", http.StatusInternalServerError)
 		return
 	}
-	i.Id = strconv.Itoa(len(l.Items)) + i.Id
+	i.ID = strconv.Itoa(len(l.Items)) + i.ID
 	l.Items = append(l.Items, i)
 	store.StoreList(l)
 	log.Print("POST ", r.URL.Path, " itemadded: ", i)
@@ -31,27 +31,27 @@ func CreateItem(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(http.StatusCreated)
 }
 
-func CreateList(w http.ResponseWriter, r *http.Request) {
+func createList(w http.ResponseWriter, r *http.Request) {
 	var l List
 	if err := json.NewDecoder(r.Body).Decode(&l); err != nil {
 		log.Print("POST ", r.URL.Path, " jsonerr: ", err)
 		http.Error(w, "{\"error\":\"jsondecode\"}", http.StatusInternalServerError)
 		return
 	}
-	if _, err := store.GetList(l.Id); err == nil {
-		log.Print("POST ", r.URL.Path, " exists: ", l.Id)
+	if _, err := store.GetList(l.ID); err == nil {
+		log.Print("POST ", r.URL.Path, " exists: ", l.ID)
 		http.Error(w, "{\"error\":\"exists\"}", http.StatusInternalServerError)
 		return
 	}
 	store.StoreList(&l)
-	log.Print("POST ", r.URL.Path, " listadded:", l.Id)
+	log.Print("POST ", r.URL.Path, " listadded:", l.ID)
 
 	w.WriteHeader(http.StatusCreated)
 	w.Header().Set("Content-Type", "application/json;charset=UTF-8")
-	json.NewEncoder(w).Encode(List{Id: l.Id})
+	json.NewEncoder(w).Encode(List{ID: l.ID})
 }
 
-func ViewList(w http.ResponseWriter, r *http.Request) {
+func viewList(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 	l, err := store.GetList(vars["id"])
 	log.Print("GET ", r.URL.Path, " found:", l != nil)

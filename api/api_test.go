@@ -32,7 +32,7 @@ func TestListAPI(t *testing.T) {
 	r := mux.NewRouter()
 	Setup(r, "/")
 
-	store.StoreList(&List{Id: "testid", Name: "test"})
+	store.StoreList(&List{ID: "testid", Name: "test"})
 
 	for _, tc := range testcases {
 		t.Run(tc.name, func(t *testing.T) {
