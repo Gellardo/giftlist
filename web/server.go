@@ -7,19 +7,9 @@ import (
 	"net/http"
 
 	"github.com/gorilla/mux"
+
+	"github.com/Gellardo/giftlist/api"
 )
-
-//TODO duplicate; import if list-API is refactored into an unique package
-type list struct {
-	Id    string `json:"id,omitempty"`
-	Name  string `json:"name,omitempty"`
-	Items []item `json:"items,omitempty"`
-}
-
-//TODO duplicate; import if list-API is refactored into an unique package
-type item struct {
-	Name string `json:"name"`
-}
 
 func renderPage(w http.ResponseWriter, basedir, name string, data interface{}) error {
 	t := template.Must(template.ParseGlob(basedir + "templates/*"))
@@ -44,7 +34,7 @@ func getListHandler(basedir, listapiurl string) http.HandlerFunc {
 			return
 		}
 
-		var l list
+		var l api.List
 		err = json.NewDecoder(resp.Body).Decode(&l)
 		if err != nil {
 			log.Printf("Failed json decode: err=%s", err)
@@ -53,13 +43,13 @@ func getListHandler(basedir, listapiurl string) http.HandlerFunc {
 		log.Println(l)
 
 		renderPage(w, basedir, "show.html", struct {
-			Id   string
-			List list
-		}{Id: vars["id"], List: l})
+			ID   string
+			List api.List
+		}{ID: vars["id"], List: l})
 	}
 }
 
-// Adds a webserver for the giftlist to the router p.
+// Run a webserver for the giftlist using the router p.
 // All paths must include the trailing '/'.
 //
 // The webserver is added to *p* under the path *prefix*.

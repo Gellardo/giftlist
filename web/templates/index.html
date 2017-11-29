@@ -9,6 +9,10 @@
 	<button type="submit" class="add">Create</button>
 </form>
 	<script>
+		String.prototype.escapeQuoteJSON = function() {
+			return this.replace(/"/g, '\\"');
+		}
+
 		function createList(){
 			var form = document.getElementById("createListForm");
 			var name = form.listname.value;
@@ -16,6 +20,7 @@
 			xmlhttp.open("POST", "/list/", false);
 			xmlhttp.setRequestHeader("Content-Type", "application/json");
 			//xmlhttp.onreadystatechange = callbackfunction(xmlhttp);
+			name = name.escapeQuoteJSON()
 			xmlhttp.send('{"id":"'+name+'","name":"'+name+'"}');
 			var response = JSON.parse(xmlhttp.responseText);
 
