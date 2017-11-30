@@ -24,7 +24,7 @@ func TestListAPI(t *testing.T) {
 		{"view list", "GET", "/testid/", "", http.StatusOK, "{\"id\":\"testid\",\"name\":\"test\"}"},
 		{"create list", "POST", "/", "{\"id\":\"someid\", \"name\":\"test123\"}", http.StatusCreated, "{\"id\":\"someid\"}"},
 		{"view list", "GET", "/someid/", "", http.StatusOK, "{\"id\":\"someid\",\"name\":\"test123\"}"},
-		{"add item", "POST", "/testid/", "{\"name\":\"testitem\"}", http.StatusCreated, ""},
+		{"add item", "POST", "/testid/items/", "{\"name\":\"testitem\"}", http.StatusCreated, ""},
 		{"view list+item", "GET", "/testid/", "", http.StatusOK, "{\"id\":\"testid\",\"name\":\"test\",\"items\":[{\"id\":\"0\",\"name\":\"testitem\"}]}"},
 		{"error in json", "POST", "/", "{\"id\":\"testid}", http.StatusBadRequest, ""},
 		{"nonexistent list", "GET", "/testid123/", "", http.StatusNotFound, ""},

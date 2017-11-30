@@ -25,8 +25,9 @@ type Item struct {
 func Setup(r *mux.Router, prefix string) {
 	s := r.PathPrefix(prefix).Subrouter()
 	s.HandleFunc("/", createList).Methods(http.MethodPost)
-	s.HandleFunc("/{id}/", viewList).Methods(http.MethodGet)
-	s.HandleFunc("/{id}/", createItem).Methods(http.MethodPost)
+	s.HandleFunc("/{lid}/", viewList).Methods(http.MethodGet)
+	s.HandleFunc("/{lid}/items/", createItem).Methods(http.MethodPost)
+	s.HandleFunc("/{lid}/items/{itemid}/", updateItem).Methods(http.MethodPost)
 
 	store = &easyStore{make(map[string]*List)}
 }

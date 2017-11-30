@@ -11,7 +11,7 @@ import (
 
 func createItem(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
-	l, err := store.GetList(vars["id"])
+	l, err := store.GetList(vars["lid"])
 	if err != nil {
 		http.Error(w, "{\"error\":\"no list\"}", http.StatusNotFound)
 		return
@@ -53,7 +53,7 @@ func createList(w http.ResponseWriter, r *http.Request) {
 
 func viewList(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
-	l, err := store.GetList(vars["id"])
+	l, err := store.GetList(vars["lid"])
 	log.Print("GET ", r.URL.Path, " found:", l != nil)
 	if err != nil {
 		http.Error(w, "{\"error\":\"no list\"}", http.StatusNotFound)
