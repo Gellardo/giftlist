@@ -67,27 +67,27 @@ func TestItemUpdate(t *testing.T) {
 		listafter  *List
 	}{
 		// successful cases
-		{"update status", "/lid/items/0", "{'assigned':true}", 200,
+		{"update status", "/lid/items/0/", "{\"assigned\":true}", 200,
 			&List{ID: "lid", Items: []Item{{ID: "0", Assigned: false}}},
 			&List{ID: "lid", Items: []Item{{ID: "0", Assigned: true}}}},
-		{"update name", "/lid/items/0", "{'name':'test'}", 200,
+		{"update name", "/lid/items/0/", "{\"name\":\"test\"}", 200,
 			&List{ID: "lid", Items: []Item{{ID: "0", Name: "name"}}},
 			&List{ID: "lid", Items: []Item{{ID: "0", Name: "test"}}}},
-		{"update link", "/lid/items/0", "{'link':'google.de'}", 200,
+		{"update link", "/lid/items/0/", "{\"link\":\"google.de\"}", 200,
 			&List{ID: "lid", Items: []Item{{ID: "0", Link: "amazon.com"}}},
 			&List{ID: "lid", Items: []Item{{ID: "0", Link: "google.de"}}}},
-		{"update all", "/lid/items/0", "{'name':'test','link':'google.de','assigned':true}", 200,
+		{"update all", "/lid/items/0/", "{\"name\":\"test\",\"link\":\"google.de\",\"assigned\":true}", 200,
 			&List{ID: "lid", Items: []Item{{ID: "0", Name: "name", Link: "amazon.com", Assigned: false}}},
 			&List{ID: "lid", Items: []Item{{ID: "0", Name: "test", Link: "google.de", Assigned: true}}}},
 
 		// failure cases
-		{"update itemid", "/lid/items/0", "{'id':'test'}", http.StatusBadRequest,
+		{"update itemid", "/lid/items/0/", "{\"id\":\"test\"}", http.StatusBadRequest,
 			&List{ID: "lid", Items: []Item{{ID: "0"}}}, nil},
-		{"complex update itemid", "/lid/items/0", "{'id':'1','name':'test','link':'google.de','assigned':true}", http.StatusBadRequest,
+		{"complex update itemid", "/lid/items/0/", "{\"id\":\"1\",\"name\":\"test\",\"link\":\"google.de\",\"assigned\":true}", http.StatusBadRequest,
 			&List{ID: "lid", Items: []Item{{ID: "0"}}}, nil},
-		{"jsonerr", "/lid/items/0", "{'id':'1}", http.StatusBadRequest,
+		{"jsonerr", "/lid/items/0/", "{\"id\":\"1}", http.StatusBadRequest,
 			&List{ID: "lid", Items: []Item{{ID: "0"}}}, nil},
-		{"nonexistant item", "/lid/items/1", "{'name':'test'}", http.StatusNotFound,
+		{"nonexistant item", "/lid/items/1/", "{\"name\":\"test\"}", http.StatusNotFound,
 			&List{ID: "lid", Items: []Item{{ID: "0"}}}, nil},
 	}
 
@@ -109,15 +109,15 @@ func TestItemUpdate(t *testing.T) {
 
 			//test for correct result
 			if w.Result().StatusCode != tc.expStatus {
-				t.Errorf("status not as expected:\n%d\n%d", w.Result().StatusCode, tc.expStatus)
+				t.Errorf("status not as expected:\nexpect: %d\nresult: %d", tc.expStatus, w.Result().StatusCode)
 			}
 			if storedl, err := estore.GetList(tc.listbefore.ID); err != nil {
 			} else if tc.listafter == nil {
 				if !reflect.DeepEqual(tc.listbefore, storedl) {
-					t.Errorf("unexpected change:\n%v\n%v", tc.listbefore, storedl)
+					t.Errorf("unexpected change:\nexpect: %v\nresult: %v", tc.listbefore, storedl)
 				}
 			} else if !reflect.DeepEqual(tc.listafter, storedl) {
-				t.Errorf("result not as expected:\n%v\n%v", tc.listafter, storedl)
+				t.Errorf("result not as expected:\nexpect: %v\nresult: %v", tc.listafter, storedl)
 			}
 		})
 	}
