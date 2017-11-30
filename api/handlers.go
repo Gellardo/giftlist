@@ -35,7 +35,7 @@ func createList(w http.ResponseWriter, r *http.Request) {
 	var l List
 	if err := json.NewDecoder(r.Body).Decode(&l); err != nil {
 		log.Print("POST ", r.URL.Path, " jsonerr: ", err)
-		http.Error(w, "{\"error\":\"jsondecode\"}", http.StatusInternalServerError)
+		http.Error(w, "{\"error\":\"jsondecode\"}", http.StatusBadRequest)
 		return
 	}
 	if _, err := store.GetList(l.ID); err == nil {

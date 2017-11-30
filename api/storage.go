@@ -28,3 +28,9 @@ func (s *easyStore) StoreList(l *List) error {
 	s.lists[l.ID] = l
 	return nil
 }
+
+func (s *easyStore) empty() {
+	for id, _ := range s.lists {
+		delete(s.lists, id)
+	}
+}
