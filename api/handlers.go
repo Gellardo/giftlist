@@ -24,7 +24,11 @@ func createItem(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	i.ID = strconv.Itoa(len(l.Items)) + i.ID
-	l.Items = append(l.Items, i)
+	if err := l.addItem(i); err != nil {
+		log.Print("POST ", r.URL.Path, " addItem: ", err)
+		http.Error(w, "{\"error\":\"exists\"}", http.StatusInternalServerError)
+		return
+	}
 	store.StoreList(l)
 	log.Print("POST ", r.URL.Path, " itemadded: ", i)
 
