@@ -68,3 +68,39 @@ func viewList(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json;charset=UTF-8")
 	json.NewEncoder(w).Encode(l)
 }
+
+func updateItem(w http.ResponseWriter, r *http.Request) {
+	vars := mux.Vars(r)
+	l, err := store.GetList(vars["lid"])
+	if err != nil {
+		log.Print("POST ", r.URL.Path, " updateItem failed: list not found")
+		http.Error(w, "{\"error\":\"no list\"}", http.StatusNotFound)
+		return
+	}
+
+	var oldItem *Item
+	if oldItem, err = l.getItem(vars["itemid"]); err != nil {
+		log.Print("POST ", r.URL.Path, " updateItem failed: item not found")
+		http.Error(w, "{\"error\":\"no item\"}", http.StatusNotFound)
+		return
+	}
+
+	var upItem Item
+	if err := json.NewDecoder(r.Body).Decode(&upItem); err != nil {
+		log.Print("POST ", r.URL.Path, " jsonerr: ", err)
+		http.Error(w, "{\"error\":\"jsondecode\"}", http.StatusBadRequest)
+		return
+	} else if upItem.ID != "" {
+		log.Print("POST ", r.URL.Path, " update item: has id-field")
+		http.Error(w, "{\"error\":\"has ID field\"}", http.StatusBadRequest)
+		return
+	}
+
+	if err := oldItem.merge(upItem); err != nil {
+		log.Print("POST ", r.URL.Path, " itemmerge error: ", err)
+		http.Error(w, "{\"error\":\"mergeerror\"}", http.StatusInternalServerError)
+		return
+	}
+	l.replaceItem(oldItem)
+	log.Print("POST ", r.URL.Path, " updateItem successful")
+}
