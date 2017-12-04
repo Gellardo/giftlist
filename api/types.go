@@ -47,6 +47,16 @@ func (l *List) replaceItem(new *Item) error {
 	return errors.New("No item to replace")
 }
 
+func (l *List) deleteItem(itemid string) error {
+	for index, i := range l.Items {
+		if itemid == i.ID {
+			l.Items = append(l.Items[:index], l.Items[index+1:]...)
+			return nil
+		}
+	}
+	return errors.New("No item to delete")
+}
+
 func (item *Item) merge(new Item) error {
 	var def Item
 	if item.ID != new.ID && new.ID != def.ID {

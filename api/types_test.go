@@ -31,3 +31,23 @@ func TestListAddItem(t *testing.T) {
 	}
 
 }
+
+func TestListDeleteItem(t *testing.T) {
+	var l List
+	i := Item{ID: "id", Name: "name"}
+	i2 := Item{ID: "id2", Name: "name2"}
+	l.addItem(i)
+	l.addItem(i2)
+	if err := l.deleteItem(i.ID); err != nil {
+		t.Error("should be able to delete the first item")
+	}
+	if geti, err := l.getItem("id2"); err != nil || !reflect.DeepEqual(i2, *geti) {
+		t.Error("second item should not be influenced by delete of first item")
+	}
+	if err := l.deleteItem(i2.ID); err != nil {
+		t.Error("should be able to delete the second item")
+	}
+	if err := l.deleteItem(i2.ID); err == nil {
+		t.Error("should *not* be able to delete an non-existant item")
+	}
+}

@@ -103,4 +103,25 @@ func updateItem(w http.ResponseWriter, r *http.Request) {
 	}
 	l.replaceItem(oldItem)
 	log.Print("POST ", r.URL.Path, " updateItem successful")
+	w.WriteHeader(http.StatusOK)
+}
+
+func deleteItem(w http.ResponseWriter, r *http.Request) {
+	vars := mux.Vars(r)
+	l, err := store.GetList(vars["lid"])
+	if err != nil {
+		log.Print("POST ", r.URL.Path, " deleteItem failed: list not found")
+		http.Error(w, "{\"error\":\"no list\"}", http.StatusNotFound)
+		return
+	}
+
+	var oldItem *Item
+	if oldItem, err = l.getItem(vars["itemid"]); err != nil {
+		log.Print("POST ", r.URL.Path, " deleteItem failed: item not found")
+		http.Error(w, "{\"error\":\"no item\"}", http.StatusNotFound)
+		return
+	}
+
+	l.deleteItem(oldItem.ID)
+	w.WriteHeader(http.StatusOK)
 }
