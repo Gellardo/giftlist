@@ -31,6 +31,11 @@
 		{{else}}
 			<td>nope</td>
 		{{end}}
+		<td>
+			<button class="assign" type="button" onclick="assignItem({{$.ID}},{{$val.ID}});">assign</button>
+			<button class="edit" type="submit">edit</button>
+			<button class="delete" type="button" onclick="deleteItem({{$.ID}},{{$val.ID}});">-</button>
+		</td>
 	</tr>
 {{end}}
 </table>
@@ -39,6 +44,26 @@
 	<script>
 		String.prototype.escapeQuoteJSON = function() {
 			return this.replace(/"/g, '\\"');
+		}
+
+		function deleteItem(listid, itemid) {
+			console.log(listid, itemid)
+			var xmlhttp = new XMLHttpRequest();
+			xmlhttp.open("DELETE", "/list/"+listid+"/items/"+itemid+"/", false);
+			xmlhttp.send();
+
+			location.reload();
+		}
+
+		function assignItem(listid, itemid) {
+			console.log(listid, itemid)
+			var xmlhttp = new XMLHttpRequest();
+			xmlhttp.open("POST", "/list/"+listid+"/items/"+itemid+"/", false);
+			xmlhttp.setRequestHeader("Content-Type", "application/json");
+			json = '{"assigned":true}'
+			xmlhttp.send(json);
+
+			location.reload();
 		}
 
 		function createItem(){

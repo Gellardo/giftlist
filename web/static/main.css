@@ -27,3 +27,11 @@ button.add {
 	background-color: green;
 	color: white;
 }
+button.delete {
+	background-color: red;
+	color: white;
+}
+button.edit {
+	background-color: blue;
+	color: white;
+}
