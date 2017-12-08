@@ -33,7 +33,7 @@
 		{{end}}
 		<td>
 			<button class="assign" type="button" onclick="assignItem({{$.ID}},{{$val.ID}});">assign</button>
-			<button class="edit" type="submit">edit</button>
+			<button class="edit" type="button" onclick="updateItem({{$.ID}},{{$val.ID}});">edit</button>
 			<button class="delete" type="button" onclick="deleteItem({{$.ID}},{{$val.ID}});">-</button>
 		</td>
 	</tr>
@@ -53,6 +53,10 @@
 			xmlhttp.send();
 
 			location.reload();
+		}
+
+		function updateItem(listid, itemid) {
+			location.href='/web/edit/'+listid+"/"+itemid;
 		}
 
 		function assignItem(listid, itemid) {

@@ -1,0 +1,46 @@
+{{ template "header" }}
+<p>Editing item</p>
+<table>
+	<tr>
+		<th>Name</th>
+		<th>Link</th>
+		<th>Assigned</th>
+	</tr>
+	<tr>
+		<form id="updateItemForm" onsubmit="updateItem(); return false">
+			<input type="hidden" name="listid" value="{{.ListID}}">
+			<input type="hidden" name="itemid" value="{{.Item.ID}}">
+			<td><input type="text" name="itemname" placeholder="New Item" value="{{.Item.Name}}" required></td>
+			<td><input type="text" name="link" placeholder="Link"value="{{.Item.Link}}"></td>
+			<td><input type="checkbox" name="assigned" value="{{.Item.Assigned}}"></td>
+			<td><button class="add" type="submit">+</button></td>
+		</form>
+		<td><button class="delete" onclick="abort({{.ListID}});" type="submit">X</button></td>
+	</tr>
+</table>
+	<script>
+		String.prototype.escapeQuoteJSON = function() {
+			return this.replace(/"/g, '\\"');
+		}
+		function abort(lid) {
+			location.href='/web/show/'+lid;
+		}
+		function updateItem() {
+			var form = document.getElementById("updateItemForm");
+			var name = form.itemname.value;
+			var listid = form.listid.value;
+			var itemid = form.itemid.value;
+			var link = form.link.value;
+			var assigned = form.assigned.checked;
+			form.reset()
+			var xmlhttp = new XMLHttpRequest();
+			xmlhttp.open("POST", "/list/"+listid+"/items/"+itemid+"/", false);
+			xmlhttp.setRequestHeader("Content-Type", "application/json");
+			json = '{"name":"'+name.escapeQuoteJSON()+'","link":"'+link.escapeQuoteJSON()+'","assigned":'+assigned+'}'
+			xmlhttp.send(json);
+
+			location.href='/web/show/'+listid;
+		}
+	</script>
+
+{{ template "footer" }}
