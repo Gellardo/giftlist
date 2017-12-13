@@ -55,6 +55,8 @@ func getUpdateHandler(basedir, listapiurl string) http.HandlerFunc {
 		listid := vars["id"]
 		itemid := vars["item"]
 
+		log.Printf("%s %s: update page", r.Method, r.URL.Path, listid, itemid)
+
 		resp, err := http.Get(listapiurl + listid)
 		if err != nil {
 			log.Printf("%s: Failed REST call err=%s", r.URL.Path, err)
@@ -73,13 +75,14 @@ func getUpdateHandler(basedir, listapiurl string) http.HandlerFunc {
 		}
 		log.Println(l)
 
-		var item *api.Item
+		var item api.Item
 		for _, it := range l.Items {
 			if it.ID == itemid {
-				item = &it
+				item = it
+				break
 			}
 		}
-		if item == nil {
+		if item.ID == "" {
 			log.Printf("%s: item not found", r.URL.Path)
 			http.Error(w, "Not found", http.StatusNotFound)
 			return
@@ -88,7 +91,7 @@ func getUpdateHandler(basedir, listapiurl string) http.HandlerFunc {
 		renderPage(w, basedir, "edit.html", struct {
 			ListID string
 			Item   api.Item
-		}{ListID: listid, Item: *item})
+		}{ListID: listid, Item: item})
 	}
 }
 
